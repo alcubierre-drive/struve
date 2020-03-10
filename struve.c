@@ -2,6 +2,14 @@
 #include <complex.h>
 #include "struve.h"
 
+typedef struct {
+    double r;
+    double i;
+} _f2c_mycdoub;
+static int _f2c_struvefunctions( _f2c_mycdoub*, int*,
+        _f2c_mycdoub*, _f2c_mycdoub*, _f2c_mycdoub*,
+        _f2c_mycdoub*, _f2c_mycdoub*, _f2c_mycdoub* );
+
 /* translated to C with f2c, got rid of dependencies by manually writing the
    necessary functions for complex variables */
 /* LICENSE: LGPLv3, Author: alcubierre-drive */
@@ -44,6 +52,39 @@
 /*     ERROR CONDITIONS */
 /*         ERROR #1, Z=0  ON INPUT, A FATAL ERROR */
 /*         ERROR #2, KODE NOT 1 OR 2 OR 3 ON INPUT, A FATAL ERROR */
+
+
+int struve_cjyhbs( int kode, const void* z, void* output ) {
+    _f2c_mycdoub* _z = (_f2c_mycdoub*) z;
+    _f2c_mycdoub* _output = (_f2c_mycdoub*) output;
+    int k = kode;
+    return _f2c_struvefunctions( _z, &k, &(_output[0]), &(_output[1]),
+            &(_output[2]), &(_output[3]), &(_output[4]), &(_output[5]) );
+}
+
+int struve_h0( const void* z, void* output ) {
+    _f2c_mycdoub* _z = (_f2c_mycdoub*) z;
+    _f2c_mycdoub* _output = (_f2c_mycdoub*) output;
+    _f2c_mycdoub cache[6];
+    int k = 3;
+    int result = _f2c_struvefunctions( _z, &k, &(cache[0]), &(cache[1]),
+            &(cache[2]), &(cache[3]), &(cache[4]), &(cache[5]) );
+    _output->r = cache[4].r;
+    _output->i = cache[4].i;
+    return result;
+}
+
+int struve_y0( const void* z, void* output ) {
+    _f2c_mycdoub* _z = (_f2c_mycdoub*) z;
+    _f2c_mycdoub* _output = (_f2c_mycdoub*) output;
+    _f2c_mycdoub cache[6];
+    int k = 3;
+    int result = _f2c_struvefunctions( _z, &k, &(cache[0]), &(cache[1]),
+            &(cache[2]), &(cache[3]), &(cache[4]), &(cache[5]) );
+    _output->r = cache[2].r;
+    _output->i = cache[2].i;
+    return result;
+}
 
 static double z_abs( _f2c_mycdoub* z ) {
     return sqrt(z->r*z->r + z->i*z->i);
